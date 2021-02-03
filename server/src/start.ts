@@ -1,5 +1,3 @@
-import Server from './Server';
-import sanitize from 'mongo-sanitize'
-import Database from './Database';
+import Server from "./Server";
 
 (new Server()).start();
