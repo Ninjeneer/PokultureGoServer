@@ -9,41 +9,39 @@ import Task from './tasks/Task';
 import Utils from './Utils';
 
 export default class Server {
-    private app: express.Express;
-    private config = require('../assets/config.json');
-    private db: Database;
-    private tasks: Task[] = [];
-    
-    constructor() {
-        this.app = express();
-        this.app.use(bodyParser.json());
-        this.db = new Database();
+  private app: express.Express;
+  private config = require('../assets/config.json');
+  private db: Database;
+  private tasks: Task[] = [];
 
-        this.tasks.push(new ImportPOITask());
-    }
+  constructor() {
+    this.app = express();
+    this.app.use(bodyParser.json());
+    this.db = new Database();
 
-    private buildRoutes() {
-        this.app.use(UserRouter);
-        this.app.use(POIRouter);
-    }
+    this.tasks.push(new ImportPOITask());
+  }
 
-    private runTasks() {
-        console.log("==> Running tasks");
-        this.tasks.forEach((t) => t.run());
-    }
+  private buildRoutes() {
+    this.app.use(UserRouter);
+    this.app.use(POIRouter);
+  }
 
-    public start() {
-        console.log("lol")
-        this.buildRoutes();
+  private runTasks() {
+    console.log("==> Running tasks");
+    this.tasks.forEach((t) => t.run());
+  }
 
-        console.log(Utils.buildAllTypesArray());
+  public start() {
+    console.log("lol")
+    this.buildRoutes();
 
-        const port = this.config ? this.config.port : 8080;
-        this.db.connect().then(() => {
-            this.runTasks();
-            this.app.listen(port, () => console.log(`Server listening on port ${port}`));
-        }).catch((e) => {
-            console.log(e);
-        });
-    }
+    const port = this.config ? this.config.port : 8080;
+    this.db.connect().then(() => {
+      this.runTasks();
+      this.app.listen(port, () => console.log(`Server listening on port ${port}`));
+    }).catch((e) => {
+      console.log(e);
+    });
+  }
 }

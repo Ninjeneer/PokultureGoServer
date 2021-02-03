@@ -6,7 +6,6 @@ export default class LocationIQ {
   constructor() { }
 
   public async reverseGeocoding(lat: number, lon: number): Promise<Location> {
-    const lol = `https://eu1.locationiq.com/v1/reverse.php?key=${config.locationIQkey}&lat=${lat}&lon=${lon}&format=json`;
     const res = await axios.get(`https://eu1.locationiq.com/v1/reverse.php?key=${config.locationIQkey}&lat=${lat}&lon=${lon}&format=json`)
     return res.data;
   }

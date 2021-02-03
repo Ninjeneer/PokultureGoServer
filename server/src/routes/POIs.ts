@@ -7,8 +7,8 @@ require('express-async-errors');
 const router = express.Router();
 
 router.get(
-    '/pois/near', async (req, res, next) => 
-    await POIController.getPOIsAroundLocation(req.query.longitude, req.query.latitude, req.query.range)
+  '/pois/near', async (req, res, next) =>
+  await POIController.getPOIsAroundLocation(req.query.longitude, req.query.latitude, req.query.range)
     .then((r) => res.status(StatusCodes.OK).json(r))
     .catch((e) => res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e))
 );

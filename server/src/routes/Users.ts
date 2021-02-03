@@ -7,8 +7,8 @@ require('express-async-errors');
 const router = express.Router();
 
 router.post(
-    '/users', async (req, res, next) => 
-    await UserController.registerUser(req.body.pseudo, req.body.password, req.body.avatar)
+  '/users', async (req, res, next) =>
+  await UserController.registerUser(req.body.pseudo, req.body.password, req.body.avatar)
     .then((r) => res.status(StatusCodes.CREATED).json(r))
     .catch((e) => res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e))
 );
