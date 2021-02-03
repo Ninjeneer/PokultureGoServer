@@ -1,8 +1,9 @@
 import User, { IUser } from "../models/User";
-import StatusCodes from 'http-status-codes'
+import StatusCodes from 'http-status-codes';
+import { AppError } from '../Types'
 
 export default class UserController {
-    public static async registerUser(res, pseudo: IUser['pseudo'], password: IUser['password'], avatar: IUser['avatar']) {
+    public static async registerUser(pseudo: IUser['pseudo'], password: IUser['password'], avatar: IUser['avatar']): Promise<IUser> {
         if (!pseudo || !password) {
             throw new Error("Missing field !");
         }
@@ -12,9 +13,16 @@ export default class UserController {
             console.log(`User ${JSON.stringify(user)} registered`);
 
             delete user.password;
-            res.status(StatusCodes.CREATED).send(user.id);
+            return user;
         } catch (e) {
-            res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.message);
+            if (e.code === 11000) {
+                throw new AppError({
+                    code: StatusCodes.CONFLICT,
+                    message: `User ${pseudo} already exists`
+                });
+            } else {
+                throw e;
+            }
         }
     }
 }

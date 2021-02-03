@@ -3,6 +3,7 @@ export default class AsyncErrorHandler {
 		if (!err) {
 			return next();
 		}
+		console.log("lol")
 		res.status(500).send(err);
 	}
 }
