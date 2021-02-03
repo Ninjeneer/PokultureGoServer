@@ -2,10 +2,11 @@ import bodyParser from 'body-parser';
 import express from 'express';
 import POIController from './controllers/POIController';
 import Database from './Database';
-import User from './models/User';
 import UserRouter from './routes/Users';
+import POIRouter from './routes/POIs';
 import ImportPOITask from './tasks/ImportPOITask';
 import Task from './tasks/Task';
+import Utils from './Utils';
 
 export default class Server {
     private app: express.Express;
@@ -23,6 +24,7 @@ export default class Server {
 
     private buildRoutes() {
         this.app.use(UserRouter);
+        this.app.use(POIRouter);
     }
 
     private runTasks() {
@@ -33,6 +35,8 @@ export default class Server {
     public start() {
         console.log("lol")
         this.buildRoutes();
+
+        console.log(Utils.buildAllTypesArray());
 
         const port = this.config ? this.config.port : 8080;
         this.db.connect().then(() => {

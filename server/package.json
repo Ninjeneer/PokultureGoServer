@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/start.ts",
+    "start": "nodemon src/start.ts --resolveJsonModule",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
