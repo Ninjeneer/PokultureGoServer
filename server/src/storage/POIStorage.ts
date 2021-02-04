@@ -2,6 +2,14 @@ import Database from "../Database";
 import config from '../../assets/config.json'
 
 export default class POIStorage {
+  public static async getPOI(params?: { name?: string, location?: [number, number] }) {
+    const query = {};
+    if (params) {
+     Object.assign(query, { 'tags.name': params.name });
+    }
+    return await Database.getClient().collection('pois').findOne(query);
+  }
+
   public static async getPOIs(params?: { near?: boolean, latitude?: number, longitude?: number, range?: number, type?: string[] }) {
     const query = {};
     if (params) {
@@ -25,5 +33,9 @@ export default class POIStorage {
       }
     }
     return await Database.getClient().collection('pois').find(query).toArray();
+  }
+
+  public static async updatePOI(poi: any) {
+    return await Database.getClient().collection('pois').findOneAndUpdate({ '_id': poi['_id'] }, poi);
   }
 }

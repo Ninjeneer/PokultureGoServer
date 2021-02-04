@@ -1,5 +1,5 @@
 export default class AsyncErrorHandler {
-  public static handleRestError(err: Error, req, res, next) {
+  public static handleRestError(err, req, res, next) {
     if (!err) {
       return next();
     }

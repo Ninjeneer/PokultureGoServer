@@ -7,11 +7,14 @@ import POIRouter from './routes/POIs';
 import ImportPOITask from './tasks/ImportPOITask';
 import Task from './tasks/Task';
 import Utils from './Utils';
+import AddPOIDescriptionTask from './tasks/AddPOIDescriptionTask';
 
 export default class Server {
   private app: express.Express;
   private config = require('../assets/config.json');
   private db: Database;
+
+  private preStartTasks: Task[] = [];
   private tasks: Task[] = [];
 
   constructor() {
@@ -19,7 +22,7 @@ export default class Server {
     this.app.use(bodyParser.json());
     this.db = new Database();
 
-    this.tasks.push(new ImportPOITask());
+    this.preStartTasks.push(new ImportPOITask(), new AddPOIDescriptionTask());
   }
 
   private buildRoutes() {
@@ -27,19 +30,32 @@ export default class Server {
     this.app.use(POIRouter);
   }
 
+  private async runPreStartTasks() {
+    console.log("\nRunning pre-start tasks...");
+    for (const task of this.preStartTasks) {
+      console.log(`\nRunning [${task.getName()}]...`);
+      try {
+        const start = Date.now();
+        await task.run();
+        const stop = Date.now();
+        console.log(`Task [${task.getName()}] finished successfully (${stop - start}ms)`);
+      } catch (e) {
+        console.log(`/!\\ Task [${task.getName()}] failed for reason :`);
+        console.log(e);
+      }
+    }
+  }
+
   private runTasks() {
-    console.log("==> Running tasks");
     this.tasks.forEach((t) => t.run());
   }
 
   public start() {
-    console.log("lol")
     this.buildRoutes();
 
     const port = this.config ? this.config.port : 8080;
     this.db.connect().then(() => {
-      this.runTasks();
-      this.app.listen(port, () => console.log(`Server listening on port ${port}`));
+      this.runPreStartTasks().then(() => this.app.listen(port, () => console.log(`\nServer listening on port ${port}`)));
     }).catch((e) => {
       console.log(e);
     });

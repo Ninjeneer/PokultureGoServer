@@ -3,7 +3,7 @@ import Utils from "../Utils";
 import ParserFactory from "../module/parser/ParserFactory";
 import LocationIQ from "../module/reversegeocoding/LocationIQ";
 export default class POIController {
-  public static async getPOIsAroundLocation(longitude: number, latitude: number, range: number) {
+  public static async handleGetPOIsAroundLocation(longitude: number, latitude: number, range: number) {
     return new Promise((resolve, error) => {
       POIStorage.getPOIs({
         near: true,
@@ -28,7 +28,7 @@ export default class POIController {
   /**
    * Returns array of links
    */
-  public static async getPOIImage(keywords: string, limit?: number) {
+  private static async getPOIImage(keywords: string, limit?: number) {
     const googleParser = ParserFactory.createGoogleParser();
     return await googleParser.getImageForKeywords(keywords, limit);
   }
@@ -36,7 +36,7 @@ export default class POIController {
   /**
    * Return city name based on POI coordinates
    */
-  public static async getPOICityName(poi) {
+  private static async getPOICityName(poi) {
     const reverseGeocoding = new LocationIQ();
     const loc = await reverseGeocoding.reverseGeocoding(poi.location[1], poi.location[0]);
     return loc.address.city;
