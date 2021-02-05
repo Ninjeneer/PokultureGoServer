@@ -1,12 +1,13 @@
 import Database from "../Database";
 import config from '../../assets/config.json'
 import mongoose, { isValidObjectId } from "mongoose";
+import POI from "../models/POI";
 
 export default class POIStorage {
   public static async getPOI(params?: { name?: string, location?: [number, number] }) {
     const query = {};
     if (params) {
-     Object.assign(query, { 'tags.name': params.name });
+     Object.assign(query, {name: params.name });
     }
     return await Database.getClient().collection('pois').findOne(query);
   }
@@ -33,10 +34,10 @@ export default class POIStorage {
         Object.assign(query, { $or: or });
       }
     }
-    return await Database.getClient().collection('pois').find(query).toArray();
+    return POI.find(query);
   }
 
   public static async updatePOI(poi: any) {
-    return await Database.getClient().collection('pois').findOneAndUpdate({ '_id': poi._id }, { $set: poi });
+    return POI.findOneAndUpdate({ '_id': poi._id }, { $set: poi }, { useFindAndModify: false });
   }
 }

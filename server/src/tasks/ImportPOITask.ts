@@ -6,6 +6,7 @@ import mongoose, { Schema } from 'mongoose';
 import Database from '../Database';
 import config from '../../assets/config.json';
 import logupdate from 'log-update';
+import POI, { ChallengeType, getPOIType } from '../models/POI'
 
 const parseOSM = require('osm-pbf-parser');
 
@@ -39,7 +40,6 @@ export default class ImportPOITask extends Task {
     return new Promise((resolve, error) => {
       const parser = parseOSM();
       let imported = 0;
-      const POI = mongoose.model('POI', new Schema({}, { strict: false }));
       console.log("Importation started...");
       fs.createReadStream(path, { emitClose: true })
         .on('end', () => resolve(imported))
@@ -56,7 +56,11 @@ export default class ImportPOITask extends Task {
             delete item.lat;
             delete item.lon;
             // Only save records having a 'tag' attribute with a wanted type
-            if (Object.keys(item.tags).some(tagKey => config.allowedTypes.map(type => type.name).includes(tagKey))) {
+            if (item.tags.name && Object.keys(item.tags).some(tagKey => config.allowedTypes.map(type => type.name).includes(tagKey))) {
+              item.name = item.tags.name;
+              item.type = getPOIType(item);
+              item.challengeType = ChallengeType.PHOTO;
+              delete item.tags.name;
               (new POI(item)).save().then(() => logupdate(`Imported POI n°${++imported}`));
             }
           }
