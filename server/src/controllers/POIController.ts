@@ -2,6 +2,8 @@ import POIStorage from "../storage/POIStorage";
 import Utils from "../Utils";
 import ParserFactory from "../modules/parser/ParserFactory";
 import LocationIQ from "../modules/reversegeocoding/LocationIQ";
+import ImportPOITask from "../tasks/ImportPOITask";
+import AddPOIDescriptionTask from "../tasks/AddPOIDescriptionTask";
 export default class POIController {
   public static async handleGetPOIsAroundLocation(longitude: number, latitude: number, range: number) {
     return new Promise((resolve, error) => {
@@ -23,6 +25,18 @@ export default class POIController {
         resolve(pois);
       })
     });
+  }
+
+  public static async importPOIs() {
+    return new Promise((resolve, error) => {
+      (new ImportPOITask()).run().then((r) => resolve(r));
+    })
+  }
+
+  public static async importPOIsDescription() {
+    return new Promise((resolve, error) => {
+      (new AddPOIDescriptionTask()).run().then((r) => resolve(r));
+    })
   }
 
   /**

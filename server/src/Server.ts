@@ -38,16 +38,7 @@ export default class Server {
         continue;
       }
 
-      console.log(`\nRunning [${task.getName()}]...`);
-      try {
-        const start = Date.now();
-        await task.run();
-        const stop = Date.now();
-        console.log(`Task [${task.getName()}] finished successfully (${stop - start}ms)`);
-      } catch (e) {
-        console.log(`/!\\ Task [${task.getName()}] failed for reason :`);
-        console.log(e);
-      }
+      await task.run();
     }
   }
 
