@@ -1,5 +1,6 @@
 import Database from "../Database";
 import config from '../../assets/config.json'
+import mongoose, { isValidObjectId } from "mongoose";
 
 export default class POIStorage {
   public static async getPOI(params?: { name?: string, location?: [number, number] }) {
@@ -36,6 +37,6 @@ export default class POIStorage {
   }
 
   public static async updatePOI(poi: any) {
-    return await Database.getClient().collection('pois').findOneAndUpdate({ '_id': poi['_id'] }, poi);
+    return await Database.getClient().collection('pois').findOneAndUpdate({ '_id': poi._id }, { $set: poi });
   }
 }
