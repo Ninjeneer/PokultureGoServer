@@ -33,6 +33,11 @@ export default class Server {
   private async runPreStartTasks() {
     console.log("\nRunning pre-start tasks...");
     for (const task of this.preStartTasks) {
+      if (!(await task.canRun())) {
+        console.log(`Task [${task.getName()}] skipped.`);
+        continue;
+      }
+
       console.log(`\nRunning [${task.getName()}]...`);
       try {
         const start = Date.now();

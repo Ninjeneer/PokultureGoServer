@@ -8,4 +8,8 @@ export default class Utils {
     }
     return types;
   }
+
+  public static parseBoolean(s: string) {
+    return s.toLowerCase() === 'true';
+  }
 }

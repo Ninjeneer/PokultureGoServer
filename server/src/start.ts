@@ -1,4 +1,4 @@
-import ParserFactory from "./module/parser/ParserFactory";
+import ParserFactory from "./modules/parser/ParserFactory";
 import Server from "./Server";
 import getDistance from 'geolib/es/getDistance';
 

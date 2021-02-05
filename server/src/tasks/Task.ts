@@ -6,6 +6,7 @@ export default abstract class Task {
   }
 
   abstract task(): Promise<any>;
+  abstract canRun(): Promise<boolean>;
 
   public run(): Promise<any> {
     return new Promise((resolve, error) => {

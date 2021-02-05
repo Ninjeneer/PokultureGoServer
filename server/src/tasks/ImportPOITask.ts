@@ -4,9 +4,8 @@ import * as through2 from 'through2';
 import fs from 'fs';
 import mongoose, { Schema } from 'mongoose';
 import Database from '../Database';
-import config from '../../assets/config.json'
-import * as parse from 'csv-parse/lib/sync'
-import ParserFactory from "../module/parser/ParserFactory";
+import config from '../../assets/config.json';
+import logupdate from 'log-update';
 
 const parseOSM = require('osm-pbf-parser');
 
@@ -15,21 +14,23 @@ export default class ImportPOITask extends Task {
     super('ImportPOITask');
   }
 
+  public async canRun(): Promise<boolean> {
+    const poisCount = await Database.getClient().collection('pois').countDocuments();
+    if (poisCount === 0) {
+      await Database.getClient().collection('pois').createIndex({ location: "2dsphere" });
+      return true;
+    } else {
+      console.log(`Found ${poisCount} POIs in database. Skipping importation.`);
+      return false;
+    }
+  }
+
+
   public async task() {
     return new Promise((resolve, error) => {
-      Database.getClient().collection('pois').countDocuments().then((poisCount) => {
-        if (poisCount === 0) {
-          console.log("No POIs found in DB. Importing...");
-          Database.getClient().collection('pois').createIndex({ location: "2dsphere" }).then(() => {
-            this.importPOIsFromFile('assets/basse-normandie-latest.osm.pbf').then((nbImported) => {
-              console.log(`Successfully imported ${nbImported} POIs !`);
-              resolve(null);
-            });
-          });
-        } else {
-          console.log(`Found ${poisCount} POIs in database. Skipping importation.`);
-          resolve(null);
-        }
+      this.importPOIsFromFile('assets/basse-normandie-latest.osm.pbf').then((nbImported) => {
+        console.log(`Successfully imported ${nbImported} POIs !`);
+        resolve(nbImported);
       });
     })
   }
@@ -39,6 +40,7 @@ export default class ImportPOITask extends Task {
       const parser = parseOSM();
       let imported = 0;
       const POI = mongoose.model('POI', new Schema({}, { strict: false }));
+      console.log("Importation started...");
       fs.createReadStream(path, { emitClose: true })
         .on('end', () => resolve(imported))
         .pipe(parser)
@@ -55,9 +57,7 @@ export default class ImportPOITask extends Task {
             delete item.lon;
             // Only save records having a 'tag' attribute with a wanted type
             if (Object.keys(item.tags).some(tagKey => config.allowedTypes.map(type => type.name).includes(tagKey))) {
-              (new POI(item)).save().then(() => {
-                console.log(`Document n°${++imported} imported`);
-              });
+              (new POI(item)).save().then(() => logupdate(`Imported POI n°${++imported}`));
             }
           }
           next();

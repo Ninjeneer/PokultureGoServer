@@ -23,6 +23,7 @@
     "express-async-errors": "^3.1.1",
     "geolib": "^3.3.1",
     "http-status-codes": "^2.1.4",
+    "log-update": "^4.0.0",
     "mongo-sanitize": "^1.1.0",
     "mongoose": "^5.11.14",
     "mongoose-sanitize": "^1.1.0",

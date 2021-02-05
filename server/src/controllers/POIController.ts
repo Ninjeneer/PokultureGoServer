@@ -1,7 +1,7 @@
 import POIStorage from "../storage/POIStorage";
 import Utils from "../Utils";
-import ParserFactory from "../module/parser/ParserFactory";
-import LocationIQ from "../module/reversegeocoding/LocationIQ";
+import ParserFactory from "../modules/parser/ParserFactory";
+import LocationIQ from "../modules/reversegeocoding/LocationIQ";
 export default class POIController {
   public static async handleGetPOIsAroundLocation(longitude: number, latitude: number, range: number) {
     return new Promise((resolve, error) => {

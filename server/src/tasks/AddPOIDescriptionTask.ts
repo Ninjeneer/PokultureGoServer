@@ -1,7 +1,9 @@
 import Task from "./Task";
-import ParserFactory from "../module/parser/ParserFactory";
+import ParserFactory from "../modules/parser/ParserFactory";
 import POIStorage from "../storage/POIStorage";
 import getDistance from 'geolib/es/getDistance';
+import SettingStorage, { SettingKey } from "../storage/SettingStorage";
+import Utils from "../Utils";
 
 const parseOSM = require('osm-pbf-parser');
 
@@ -13,6 +15,15 @@ enum DescriptionBasedType {
 export default class AddPOIDescriptionTask extends Task {
   constructor() {
     super('AddPOIDescriptionTask');
+  }
+
+  public async canRun(): Promise<boolean> {
+    const setting = await SettingStorage.getSettingByKey(SettingKey.RUN_TASK_ADD_POI_DESCRIPTION);
+    if (setting) {
+      return Utils.parseBoolean(setting.value);
+    } else {
+      return true;
+    }
   }
 
   public async task() {
@@ -45,5 +56,11 @@ export default class AddPOIDescriptionTask extends Task {
       }
     }
     console.log(`Updated ${nbUpdated} descriptions`);
+    const setting = await SettingStorage.getSettingByKey(SettingKey.RUN_TASK_ADD_POI_DESCRIPTION);
+    if (setting) {
+      setting.value = false;
+    } else {
+      await SettingStorage.createSetting(SettingKey.RUN_TASK_ADD_POI_DESCRIPTION, false);
+    }
   }
 }
