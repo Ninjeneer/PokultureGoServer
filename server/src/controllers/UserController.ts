@@ -1,6 +1,5 @@
 import User, { IUser } from "../models/User";
 import StatusCodes from 'http-status-codes';
-import { AppError } from '../Types'
 
 export default class UserController {
   public static async registerUser(pseudo: IUser['pseudo'], password: IUser['password'], avatar: IUser['avatar']): Promise<IUser> {
@@ -16,10 +15,10 @@ export default class UserController {
       return user;
     } catch (e) {
       if (e.code === 11000) {
-        throw new AppError({
+        throw {
           code: StatusCodes.CONFLICT,
           message: `User ${pseudo} already exists`
-        });
+        };
       } else {
         throw e;
       }

@@ -5,10 +5,14 @@ export interface AppErrorContent {
 }
 
 export class AppError extends Error {
-  private data: AppErrorContent;
+  private code?: number;
+  public message;
 
-  constructor(data: AppErrorContent) {
-    super(data.message);
-    this.data = data;
+  constructor(e: AppErrorContent) {
+    super(e.message);
+    this.name = "AppError";
+    this.message = e.message;
+    this.code = e.code;
+    this.stack = e.stack;
   }
 }

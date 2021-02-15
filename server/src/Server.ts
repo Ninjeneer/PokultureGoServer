@@ -1,12 +1,11 @@
 import bodyParser from 'body-parser';
 import express from 'express';
-import POIController from './controllers/POIController';
 import Database from './Database';
 import UserRouter from './routes/Users';
 import POIRouter from './routes/POIs';
+import ChallengeRouter from './routes/Challenges';
 import ImportPOITask from './tasks/ImportPOITask';
 import Task from './tasks/Task';
-import Utils from './Utils';
 import AddPOIDescriptionTask from './tasks/AddPOIDescriptionTask';
 
 export default class Server {
@@ -28,6 +27,7 @@ export default class Server {
   private buildRoutes() {
     this.app.use(UserRouter);
     this.app.use(POIRouter);
+    this.app.use(ChallengeRouter);
   }
 
   private async runPreStartTasks() {

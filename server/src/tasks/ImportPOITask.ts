@@ -2,11 +2,12 @@ import Task from "./Task";
 
 import * as through2 from 'through2';
 import fs from 'fs';
-import mongoose, { Schema } from 'mongoose';
 import Database from '../Database';
 import config from '../../assets/config.json';
 import logupdate from 'log-update';
-import POI, { ChallengeType, getPOIType } from '../models/POI'
+import POI, { getPOIType } from '../models/POI'
+import Challenge, { ChallengeType } from "../models/Challenge";
+import mongoose from "mongoose";
 
 const parseOSM = require('osm-pbf-parser');
 
@@ -55,13 +56,20 @@ export default class ImportPOITask extends Task {
             Object.assign(item, { location: [item.lon, item.lat] });
             delete item.lat;
             delete item.lon;
-            // Only save records having a 'tag' attribute with a wanted type
+            // Only save records having a 'tag' attribute with a name and a wanted type
             if (item.tags.name && Object.keys(item.tags).some(tagKey => config.allowedTypes.map(type => type.name).includes(tagKey))) {
+              // Move name to object root
               item.name = item.tags.name;
-              item.type = getPOIType(item);
-              item.challengeType = ChallengeType.PHOTO;
               delete item.tags.name;
-              (new POI(item)).save().then(() => logupdate(`Imported POI n°${++imported}`));
+              // Duplicate type to object root
+              item.type = getPOIType(item);
+              // Define POI challenge
+              const challenge = new Challenge({ type: ChallengeType.PHOTO });
+              challenge.save().then((c) => {
+                item.challenge = new mongoose.Types.ObjectId(c.id);
+                // Save
+                (new POI(item)).save().then(() => logupdate(`Imported POI n°${++imported}`));
+              });
             }
           }
           next();

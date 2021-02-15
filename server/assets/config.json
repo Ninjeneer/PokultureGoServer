@@ -1,5 +1,9 @@
 {
     "port": 3000,
+    "locationIQkey": "pk.a8cc98262c2a22e215225dea4829ad6c",
+    "imageRecognition": {
+      "nbResults": 5
+    },
     "allowedTypes": [
         {
             "name": "amenity",
@@ -73,6 +77,5 @@
                 "marina"
             ]
         }
-    ],
-    "locationIQkey": "pk.a8cc98262c2a22e215225dea4829ad6c"
+    ]
 }

@@ -5,8 +5,6 @@ import getDistance from 'geolib/es/getDistance';
 import SettingStorage, { SettingKey } from "../storage/SettingStorage";
 import Utils from "../Utils";
 
-const parseOSM = require('osm-pbf-parser');
-
 enum DescriptionBasedType {
   NAME = 'name',
   COORDINATES = 'coordinates'

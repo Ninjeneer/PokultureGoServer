@@ -1,20 +1,19 @@
 import Database from "../Database";
 import config from '../../assets/config.json'
-import mongoose, { isValidObjectId } from "mongoose";
-import POI from "../models/POI";
+import POI, { IPOI } from "../models/POI";
 
 export default class POIStorage {
-  public static async getPOI(params?: { name?: string, location?: [number, number] }) {
-    const query = {};
-    if (params) {
-     Object.assign(query, {name: params.name });
-    }
-    return await Database.getClient().collection('pois').findOne(query);
+  public static async getPOI(params?: { name?: string, near?: boolean, latitude?: number, longitude?: number, range?: number, type?: string[], challengeID?: string }): Promise<IPOI> {
+    const result = await POIStorage.getPOIs(params);
+    return result.length > 0 ? result[0] : null;
   }
 
-  public static async getPOIs(params?: { near?: boolean, latitude?: number, longitude?: number, range?: number, type?: string[] }) {
+  public static async getPOIs(params?: { name?: string, near?: boolean, latitude?: number, longitude?: number, range?: number, type?: string[], challengeID?: string }): Promise<IPOI[]> {
     const query = {};
     if (params) {
+      if (params.name) {
+        Object.assign(query, {name: params.name });
+      }
       if (params.near && params.latitude && params.longitude && params.range) {
         Object.assign(query, {
           location: {
@@ -32,6 +31,9 @@ export default class POIStorage {
           or.push({ [`tags.${type}`]: { $in: params.type } });
         }
         Object.assign(query, { $or: or });
+      }
+      if (params.challengeID) {
+        Object.assign(query, { challenge: params.challengeID });
       }
     }
     return POI.find(query);
