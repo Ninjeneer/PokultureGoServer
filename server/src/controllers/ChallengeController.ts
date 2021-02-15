@@ -6,7 +6,7 @@ import POIStorage from "../storage/POIStorage";
 import { AppError } from "../Types";
 
 export default class ChallengeController {
-  public static async validateChallenge(challengeID: string, payload: any) {
+  public static async validateChallenge(challengeID: string, payload: any): Promise<{ validated: boolean, score: number }> {
       const challenge = await Challenge.findById(challengeID);
       if (!challenge) {
         throw new AppError({
@@ -29,8 +29,11 @@ export default class ChallengeController {
           const distanceFromPOI = getDistance({ latitude: poi.location[1], longitude: poi.location[0] }, { latitude: payload.latitude, longitude: payload.longitude });
           if (results.some(challenge.allowedTags) && distanceFromPOI < 30) {
             // Challenge is validated
+            // TODO update player score and achived challenges
+            return { validated: true, score: 0 };
+          } else {
+            return { validated: false, score: 0 };
           }
-          break;
         default:
           break;
       }

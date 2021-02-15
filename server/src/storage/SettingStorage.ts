@@ -1,7 +1,8 @@
 import Setting, { ISetting } from "../models/Setting";
 
 export enum SettingKey {
-  RUN_TASK_ADD_POI_DESCRIPTION = 'runTaskAddPOIDescription'
+  RUN_TASK_ADD_POI_DESCRIPTION = 'runTaskAddPOIDescription',
+  RUN_TASK_ADD_CHALLENGES_PHOTO_SYNONYMS = 'runTaskAddPhotoChallengesSynonyms'
 }
 
 

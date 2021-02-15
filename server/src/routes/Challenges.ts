@@ -9,8 +9,8 @@ const router = express.Router();
 router.post(
   '/challenges/validate', async (req, res, next) => {
     try {
-      await ChallengeController.validateChallenge(req.body.id, req.body.payload);
-      res.status(StatusCodes.OK).send();
+      const validated = await ChallengeController.validateChallenge(req.body.id, req.body.payload);
+      res.status(StatusCodes.OK).send(validated);
     } catch (e) {
       ErrorHandler.handleRestError(e, res, next);
     }

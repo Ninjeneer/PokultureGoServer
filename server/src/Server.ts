@@ -7,6 +7,7 @@ import ChallengeRouter from './routes/Challenges';
 import ImportPOITask from './tasks/ImportPOITask';
 import Task from './tasks/Task';
 import AddPOIDescriptionTask from './tasks/AddPOIDescriptionTask';
+import AddPhotoChallengesSynonyms from './tasks/AddPhotoChallengesSynonyms';
 
 export default class Server {
   private app: express.Express;
@@ -21,7 +22,7 @@ export default class Server {
     this.app.use(bodyParser.json());
     this.db = new Database();
 
-    this.preStartTasks.push(new ImportPOITask(), new AddPOIDescriptionTask());
+    this.preStartTasks.push(new ImportPOITask(), new AddPOIDescriptionTask(), new AddPhotoChallengesSynonyms());
   }
 
   private buildRoutes() {
