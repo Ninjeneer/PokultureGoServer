@@ -4,6 +4,7 @@ import * as mobilenet from '@tensorflow-models/mobilenet';
 import fs from 'fs';
 import jpeg from 'jpeg-js';
 import config from '../../../assets/config.json'
+import { AppError } from "../../Types";
 
 export default class Tensorflow extends Recognition {
   private static model: mobilenet.MobileNet;
@@ -16,10 +17,20 @@ export default class Tensorflow extends Recognition {
       fs.mkdirSync('tmp');
     }
     // Save image on disk
-    fs.writeFileSync(path, base64Data,  {encoding: 'base64'});
-    const predictions = await this.processRecognition(path);
+    fs.writeFileSync(path, base64Data, { encoding: 'base64' });
+    let predictions;
+    try {
+      predictions = await this.processRecognition(path);
+    } catch (e) {
+      // Delete asynchronously the saved image
+      fs.unlink(path, () => { });
+      throw new AppError({
+        message: 'Unable to process image',
+        stack: e.stack,
+      });
+    }
     // Delete asynchronously the saved image
-    fs.unlink(path, () => {});
+    fs.unlink(path, () => { });
     const results: string[] = [];
     for (const prediction of predictions) {
       prediction.className.split(",").forEach(p1 => {
