@@ -10,7 +10,7 @@ export default class Tensorflow extends Recognition {
 
   async recognizeImage(base64Image: string): Promise<string[]> {
     const path = 'tmp/' + Date.now();
-    const base64Data = base64Image.replace(/^data:([A-Za-z-+/]+);base64,/, '');
+    const base64Data = base64Image.trim().replace(/^data:([A-Za-z-+/]+);base64,/, '');
     // Create tmp directory if needed
     if (!fs.existsSync('tmp')) {
       fs.mkdirSync('tmp');

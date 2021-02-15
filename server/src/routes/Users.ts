@@ -1,6 +1,6 @@
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
-import ErrorHandler from '../AsyncErrorHandler';
+import ErrorHandler from '../ErrorHandler';
 import UserController from '../controllers/UserController';
 require('express-async-errors');
 

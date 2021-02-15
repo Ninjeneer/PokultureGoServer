@@ -1,19 +1,10 @@
 import Task from "./Task";
-
-import * as through2 from 'through2';
-import fs from 'fs';
-import Database from '../Database';
-import config from '../../assets/config.json';
 import logupdate from 'log-update';
-import POI, { getPOIType } from '../models/POI'
-import Challenge, { ChallengeType, IChallenge } from "../models/Challenge";
-import mongoose from "mongoose";
 import POIStorage from "../storage/POIStorage";
 import SynonymFactory from "../modules/synonyms/SynonymFactory";
 import ChallengeStorage from "../storage/ChallengeStorage";
 import SettingStorage, { SettingKey } from "../storage/SettingStorage";
 import Utils from "../Utils";
-import Setting from "../models/Setting";
 
 const parseOSM = require('osm-pbf-parser');
 
@@ -37,6 +28,7 @@ export default class AddPhotoChallengesSynonyms extends Task {
     const synonym = SynonymFactory.createThesaurus();
     for (const challenge of challenges) {
       const poi = await POIStorage.getPOI({ challengeID: challenge.id });
+      // Handle types having format XXXX_XXXXX
       for (const subType of poi.tags[poi.type].split("_")) {
         challenge.allowedTags.push(...await synonym.getSynonymsOf(subType));
       }

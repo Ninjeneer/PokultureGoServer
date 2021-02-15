@@ -9,7 +9,7 @@ export enum SettingKey {
 export default class SettingStorage {
   public static async createSetting(key: string, value: any) {
     const setting = new Setting({ key, value });
-    setting.save();
+    return await setting.save();
   }
 
   public static async getSettings(): Promise<ISetting[]> {

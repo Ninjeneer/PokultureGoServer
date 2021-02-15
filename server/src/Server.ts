@@ -19,7 +19,7 @@ export default class Server {
 
   constructor() {
     this.app = express();
-    this.app.use(bodyParser.json());
+    this.app.use(bodyParser({ limit: '50mb'}));
     this.db = new Database();
 
     this.preStartTasks.push(new ImportPOITask(), new AddPOIDescriptionTask(), new AddPhotoChallengesSynonyms());

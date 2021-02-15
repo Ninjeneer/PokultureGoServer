@@ -23,7 +23,7 @@ export default class Thesaurus extends Synonym {
         for (const data of response.data[0].meta.syns) {
           if (Array.isArray(data)) {
             synonyms.push(...data);
-          } else {
+          } else if (data !== null && data !== "") {
             synonyms.push(data);
           }
         }
