@@ -1,13 +1,17 @@
 import User, { IUser } from "../models/User";
 import StatusCodes from 'http-status-codes';
+import { AppError } from "../Types";
 
 export default class UserController {
   public static async registerUser(pseudo: IUser['pseudo'], password: IUser['password'], avatar: IUser['avatar']): Promise<IUser> {
     if (!pseudo || !password) {
-      throw new Error("Missing field !");
+      throw new AppError({
+        code: StatusCodes.BAD_REQUEST,
+        message: 'Missing field'
+      })
     }
     try {
-      let user = new User({ pseudo, password, avatar });
+      let user = new User({ pseudo, password, avatar, scores: [] });
       user = await user.save();
       console.log(`User ${JSON.stringify(user)} registered`);
 
@@ -15,10 +19,11 @@ export default class UserController {
       return user;
     } catch (e) {
       if (e.code === 11000) {
-        throw {
+        throw new AppError({
           code: StatusCodes.CONFLICT,
-          message: `User ${pseudo} already exists`
-        };
+          message: e.message,
+          stack: e.stack
+        })
       } else {
         throw e;
       }

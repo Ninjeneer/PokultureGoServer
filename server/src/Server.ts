@@ -4,6 +4,7 @@ import Database from './Database';
 import UserRouter from './routes/Users';
 import POIRouter from './routes/POIs';
 import ChallengeRouter from './routes/Challenges';
+import LeaderboardRouter from './routes/Leaderboard';
 import ImportPOITask from './tasks/ImportPOITask';
 import Task from './tasks/Task';
 import AddPOIDescriptionTask from './tasks/AddPOIDescriptionTask';
@@ -29,6 +30,7 @@ export default class Server {
     this.app.use(UserRouter);
     this.app.use(POIRouter);
     this.app.use(ChallengeRouter);
+    this.app.use(LeaderboardRouter);
   }
 
   private async runPreStartTasks() {

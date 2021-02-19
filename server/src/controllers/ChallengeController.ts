@@ -31,7 +31,7 @@ export default class ChallengeController {
           if (results.some(r => challenge.allowedTags.includes(r)) && distanceFromPOI < 60) {
             // Challenge is validated
             // TODO update player score and achived challenges
-            return { validated: true, score: 0 };
+            return { validated: true, score: challenge.score };
           } else {
             return { validated: false, score: 0 };
           }

@@ -1,5 +1,4 @@
 import { StatusCodes } from "http-status-codes";
-import Setting from "../models/Setting";
 import SettingStorage from "../storage/SettingStorage";
 import { AppError } from "../Types";
 
