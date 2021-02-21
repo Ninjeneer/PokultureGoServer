@@ -48,6 +48,8 @@ export default class UserController {
     }
     try {
       let user = new User({ pseudo, password, avatar, scores: [] });
+      const token = jwt.sign({ id: user.id, pseudo: user.pseudo }, config.jwtSecretKey);
+      user.token = token;
       user = await user.save();
       console.log(`User ${JSON.stringify(user)} registered`);
 
@@ -75,7 +77,7 @@ export default class UserController {
     const user = await UserStorage.getUserByPseudo(pseudo);
     if (!user || !(await comparePasswords(password, user.password))) {
       throw new AppError({
-        code: StatusCodes.FORBIDDEN,
+        code: StatusCodes.UNAUTHORIZED,
         message: 'Invalid pseudo or password'
       });
     }

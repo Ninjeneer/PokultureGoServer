@@ -19,4 +19,8 @@ export default class Utils {
     delete user.password;
     return user;
   }
+
+  public static buildServerURL(): string {
+    return 'http://localhost:8080';
+  }
 }

@@ -20,7 +20,7 @@ export default class SettingStorage {
     return Setting.findOne({ key });
   }
 
-  public static async updateSetting(key: string, value: string) {
+  public static async updateSetting(key: string, value: string | boolean) {
     return Setting.findOneAndUpdate({ key }, { $set: { key, value }});
   }
 }

@@ -56,7 +56,7 @@ export default class AddPOIDescriptionTask extends Task {
     console.log(`Updated ${nbUpdated} descriptions`);
     const setting = await SettingStorage.getSettingByKey(SettingKey.RUN_TASK_ADD_POI_DESCRIPTION);
     if (setting) {
-      setting.value = false;
+      await SettingStorage.updateSetting(SettingKey.RUN_TASK_ADD_POI_DESCRIPTION, false);
     } else {
       await SettingStorage.createSetting(SettingKey.RUN_TASK_ADD_POI_DESCRIPTION, false);
     }
