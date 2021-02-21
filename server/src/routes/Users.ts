@@ -7,10 +7,21 @@ require('express-async-errors');
 const router = express.Router();
 
 router.post(
-  '/users', async (req, res, next) => {
+  '/users/register', async (req, res, next) => {
     try {
       const user = await UserController.registerUser(req.body.pseudo, req.body.password, req.body.avatar)
       res.status(StatusCodes.CREATED).send(user);
+    } catch (e) {
+      ErrorHandler.handleRestError(e, res, next);
+    }
+  }
+);
+
+router.post(
+  '/users/login', async (req, res, next) => {
+    try {
+      const user = await UserController.loginUser(req.body.pseudo, req.body.password)
+      res.status(StatusCodes.OK).send(user);
     } catch (e) {
       ErrorHandler.handleRestError(e, res, next);
     }

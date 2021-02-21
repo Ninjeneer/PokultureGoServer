@@ -65,6 +65,7 @@ export default class ImportPOITask extends Task {
               item.type = getPOIType(item);
               // Define POI challenge
               const challenge = new Challenge({ type: ChallengeType.PHOTO });
+              challenge.score = Math.round(Math.random() * 100);
               challenge.save().then((c) => {
                 item.challenge = new mongoose.Types.ObjectId(c.id);
                 // Save
