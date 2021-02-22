@@ -23,4 +23,12 @@ export default class Utils {
   public static buildServerURL(): string {
     return 'http://localhost:8080';
   }
+
+  public static isEmptyObject(obj: any): boolean {
+    return JSON.stringify({}) === JSON.stringify(obj);
+  }
+
+  public static locations(locations: number[]): { longitude: number, latitude: number } {
+    return { longitude: locations[0], latitude: locations[1] };
+  }
 }

@@ -21,7 +21,7 @@ export default class HttpClient {
   public async authenticate(path, params): Promise<HttpResponse> {
     const response = await this.post(path, params);
     if (response.status === StatusCodes.OK) {
-      this.token = response.headers['authorization'];
+      this.token = 'Bearer ' + response.data.token;
       this.authenticatedUser = response.data;
     }
     return response;

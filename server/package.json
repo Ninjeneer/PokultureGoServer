@@ -5,12 +5,14 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon src/start.ts --resolveJsonModule",
+    "test:context": "ts-node test/Context.ts",
     "test": "mocha -r ts-node/register test/**/*Test.ts",
     "test:challenge": "mocha -r ts-node/register test/ChallengeTest.ts"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/axios": "^0.14.0",
     "@types/bcrypt": "^3.0.0",
     "@types/chai": "^4.2.15",
     "@types/chai-subset": "^1.3.3",
@@ -28,6 +30,7 @@
     "@tensorflow-models/mobilenet": "^2.0.4",
     "@tensorflow/tfjs-core": "^1.2.11",
     "@tensorflow/tfjs-node": "^3.0.0",
+    "axios": "^0.21.1",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "chai": "^4.3.0",
@@ -41,9 +44,11 @@
     "jsonwebtoken": "^8.5.1",
     "log-update": "^4.0.0",
     "mocha": "^8.3.0",
+    "mochawesome": "^6.2.2",
     "mongo-sanitize": "^1.1.0",
     "mongoose": "^5.11.14",
     "mongoose-sanitize": "^1.1.0",
+    "node-html-parser": "^2.2.0",
     "osm-pbf-parser": "^2.3.0",
     "through2": "^2.0.5"
   }
