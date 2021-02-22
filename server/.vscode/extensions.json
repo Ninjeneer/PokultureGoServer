@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "eamodio.gitlens",
+        "ms-vscode.vscode-typescript-next",
+        "hbenl.vscode-mocha-test-adapter",
+        "hbenl.vscode-test-explorer"
+    ]
+}
