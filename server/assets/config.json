@@ -79,5 +79,17 @@
                 "marina"
             ]
         }
-    ]
+    ],
+    "test": {
+      "users": {
+        "admin": {
+          "pseudo": "admin",
+          "password": "Adm1n"
+        },
+        "basic": {
+          "pseudo": "basic",
+          "password": "B4s1c"
+        }
+      }
+    }
 }

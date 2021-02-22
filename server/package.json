@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon src/start.ts --resolveJsonModule",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "tests": "mocha -r ts-node/register test/**/*Test.ts"
+    "test": "mocha -r ts-node/register test/**/*Test.ts",
+    "test:challenge": "mocha -r ts-node/register test/ChallengeTest.ts"
   },
   "author": "",
   "license": "ISC",

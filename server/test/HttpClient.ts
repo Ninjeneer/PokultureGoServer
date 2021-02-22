@@ -28,7 +28,7 @@ export default class HttpClient {
   }
 
   public async logAs(pseudo: string, password: string) {
-    await this.authenticate(Utils.buildServerURL() + '/auth/login', { pseudo: pseudo, password: password });
+    await this.authenticate(Utils.buildServerURL() + '/users/login', { pseudo: pseudo, password: password });
   }
 
   public async get(path, params?): Promise<HttpResponse> {

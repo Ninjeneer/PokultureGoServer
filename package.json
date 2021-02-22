@@ -1,9 +1,0 @@
-{
-  "dependencies": {
-    "axios": "^0.21.1",
-    "node-html-parser": "^2.1.0"
-  },
-  "devDependencies": {
-    "@types/axios": "^0.14.0"
-  }
-}
