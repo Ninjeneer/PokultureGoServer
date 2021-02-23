@@ -26,6 +26,16 @@ describe("Challenge tests", function () {
     challenges = await ChallengeStorage.getChallenges();
   });
 
+  describe("Access", () => {
+    it("should get a challenge by ID", async () => {
+      const response = await httpClient.get(`${Utils.buildServerURL()}/challenges/${challenges[0].id}`);
+      expect(response.status).to.be.eq(StatusCodes.OK);
+      const tmp = challenges[0]['_doc'];
+      tmp._id = tmp._id.toString();
+      expect(response.data).to.be.deep.eq(tmp);
+    });
+  })
+
   describe("Validation", () => {
     it("should not validate a challenge with a wrong id", async () => {
       const response = await httpClient.post(`${Utils.buildServerURL()}/challenges/validate`, { id: 'invalidID', payload: {} });

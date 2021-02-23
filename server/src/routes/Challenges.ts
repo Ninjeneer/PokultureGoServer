@@ -7,6 +7,19 @@ require('express-async-errors');
 
 const router = express.Router();
 
+router.get(
+  '/challenges/:id',
+  async (req, res, next) => await UserController.checkToken(req, next),
+  async (req, res, next) => {
+    try {
+      const challenge = await ChallengeController.getChallenge(req.params.id);
+      res.status(StatusCodes.OK).send(challenge);
+    } catch (e) {
+      ErrorHandler.handleRestError(e, res, next);
+    }
+  }
+);
+
 router.post(
   '/challenges/validate',
   async (req, res, next) => await UserController.checkToken(req, next),

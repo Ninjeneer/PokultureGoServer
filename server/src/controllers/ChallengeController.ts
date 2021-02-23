@@ -11,6 +11,24 @@ import { AppError } from "../Types";
 import Utils from "../Utils";
 
 export default class ChallengeController {
+  public static async getChallenge(id: IChallenge['id']): Promise<IChallenge> {
+    let challenge: IChallenge;
+    try {
+      challenge = await ChallengeStorage.getChallenge({ id });
+    } catch (e) {
+      throw new AppError({
+        code: StatusCodes.BAD_REQUEST
+      });
+    }
+    if (!challenge) {
+      throw new AppError({
+        code: StatusCodes.NOT_FOUND,
+        message: 'Challenge does not exist'
+      });
+    }
+    return challenge;
+  }
+
   public static async validateChallenge(user: IUser, challengeID: IChallenge['id'], payload: any): Promise<{ validated: boolean, score: number }> {
     let challenge: IChallenge;
     try {

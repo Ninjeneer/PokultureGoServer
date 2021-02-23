@@ -10,6 +10,7 @@ export interface IPOI extends Document {
     [properties: string]: any
   };
   challenge: string;
+  images: string[];
   [properties: string]: any
 }
 
@@ -19,7 +20,8 @@ const POISchema: Schema = new Schema({
   type: { type: String, required: true },
   description: { type: String },
   challenge: { type: String },
-  tags: { type: Object }
+  tags: { type: Object },
+  images: [String]
 });
 
 export function getPOIType(poi: any) {

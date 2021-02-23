@@ -12,6 +12,7 @@ export default interface Location {
     neighbourhood: string,
     hamlet: string,
     city: string,
+    village: string,
     county: string,
     state: string,
     country: string,

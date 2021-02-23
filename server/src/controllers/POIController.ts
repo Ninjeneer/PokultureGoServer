@@ -23,6 +23,10 @@ export default class POIController {
         message: 'POI does not exist'
       });
     }
+    const city = await this.getPOICityName(poi);
+    if (city) {
+      Object.assign(poi, { images: await this.getPOIImage(`${poi.name} ${city}`, 10) });
+    }
     return poi;
   }
 
@@ -73,6 +77,6 @@ export default class POIController {
   private static async getPOICityName(poi) {
     const reverseGeocoding = new LocationIQ();
     const loc = await reverseGeocoding.reverseGeocoding(poi.location[1], poi.location[0]);
-    return loc.address.city;
+    return loc.address.city ? loc.address.city : loc.address.village;
   }
 }
