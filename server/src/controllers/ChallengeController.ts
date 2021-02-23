@@ -11,7 +11,7 @@ import { AppError } from "../Types";
 import Utils from "../Utils";
 
 export default class ChallengeController {
-  public static async validateChallenge(user: IUser, challengeID: string, payload: any): Promise<{ validated: boolean, score: number }> {
+  public static async validateChallenge(user: IUser, challengeID: IChallenge['id'], payload: any): Promise<{ validated: boolean, score: number }> {
     let challenge: IChallenge;
     try {
       challenge = await ChallengeStorage.getChallenge({ id: challengeID });

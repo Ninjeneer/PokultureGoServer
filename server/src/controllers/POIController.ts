@@ -5,7 +5,27 @@ import LocationIQ from "../modules/reversegeocoding/LocationIQ";
 import ImportPOITask from "../tasks/ImportPOITask";
 import AddPOIDescriptionTask from "../tasks/AddPOIDescriptionTask";
 import { IPOI } from "../models/POI";
+import { AppError } from "../Types";
+import { StatusCodes } from "http-status-codes";
 export default class POIController {
+  public static async getPOI(id: IPOI['id']): Promise<IPOI> {
+    let poi: IPOI;
+    try {
+      poi = await POIStorage.getPOI({ id });
+    } catch (e) {
+      throw new AppError({
+        code: StatusCodes.BAD_REQUEST
+      });
+    }
+    if (!poi) {
+      throw new AppError({
+        code: StatusCodes.NOT_FOUND,
+        message: 'POI does not exist'
+      });
+    }
+    return poi;
+  }
+
   public static async handleGetPOIsAroundLocation(longitude: number, latitude: number, range: number): Promise<IPOI[]> {
     const pois = await POIStorage.getPOIs({
       near: true,

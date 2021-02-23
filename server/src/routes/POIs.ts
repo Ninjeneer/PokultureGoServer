@@ -8,6 +8,19 @@ require('express-async-errors');
 const router = express.Router();
 
 router.get(
+  '/pois/:id',
+  async (req, res, next) => await UserController.checkToken(req, next),
+  async (req, res, next) => {
+    try {
+      const poi = await POIController.getPOI(req.params.id);
+      res.status(StatusCodes.OK).send(poi);
+    } catch (e) {
+      ErrorHandler.handleRestError(e, res, next);
+    }
+  }
+);
+
+router.get(
   '/pois/near',
   async (req, res, next) => await UserController.checkToken(req, next),
   async (req, res, next) => {

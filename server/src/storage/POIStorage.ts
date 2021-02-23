@@ -1,16 +1,20 @@
 import Database from "../Database";
 import config from '../../assets/config.json'
 import POI, { IPOI } from "../models/POI";
+import mongoose from 'mongoose';
 
 export default class POIStorage {
-  public static async getPOI(params?: { name?: string, near?: boolean, latitude?: number, longitude?: number, range?: number, type?: string[], challengeID?: string }): Promise<IPOI> {
+  public static async getPOI(params?: { id?: string, name?: string, near?: boolean, latitude?: number, longitude?: number, range?: number, type?: string[], challengeID?: string }): Promise<IPOI> {
     const result = await POIStorage.getPOIs(params);
     return result.length > 0 ? result[0] : null;
   }
 
-  public static async getPOIs(params?: { name?: string, near?: boolean, latitude?: number, longitude?: number, range?: number, type?: string[], challengeID?: string }): Promise<IPOI[]> {
+  public static async getPOIs(params?: { id?: string, name?: string, near?: boolean, latitude?: number, longitude?: number, range?: number, type?: string[], challengeID?: string }): Promise<IPOI[]> {
     const query = {};
     if (params) {
+      if (params.id) {
+        Object.assign(query, { _id: mongoose.Types.ObjectId(params.id) });
+      }
       if (params.name) {
         Object.assign(query, {name: params.name });
       }
