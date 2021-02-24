@@ -31,4 +31,12 @@ export default class Utils {
   public static locations(locations: number[]): { longitude: number, latitude: number } {
     return { longitude: locations[0], latitude: locations[1] };
   }
+
+  /**
+   * Replace mongo DB _id by id in query results
+   */
+  public static reformatIdField(aggregation: {}[]) {
+    aggregation.push({ $addFields: { id: "$_id" } });
+    aggregation.push({ $unset: "_id" });
+  }
 }
