@@ -20,7 +20,7 @@ router.post(
 router.post(
   '/users/login', async (req, res, next) => {
     try {
-      const user = await UserController.loginUser(req.body.pseudo, req.body.password)
+      const user = await UserController.loginUser(req.body.pseudo, req.body.password, req.body.token)
       res.status(StatusCodes.OK).send(user);
     } catch (e) {
       ErrorHandler.handleRestError(e, res, next);

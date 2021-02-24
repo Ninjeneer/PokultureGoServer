@@ -6,13 +6,16 @@ import HttpClient from "./HttpClient";
 import fs from 'fs';
 import chai from 'chai';
 import chaiSubset from 'chai-subset';
+import config from '../assets/config.json'
 
 const httpClient = new HttpClient();
 const user = {} as { pseudo: string; password: string };
 
 chai.use(chaiSubset);
 
-describe("User tests", () => {
+describe("User tests", function () {
+  this.timeout(20000000);
+
   describe("Registration", () => {
     it("should register a valid user without avatar", async () => {
       const pseudo = faker.random.alphaNumeric(10);
@@ -54,6 +57,18 @@ describe("User tests", () => {
       expect(response.status).to.be.eq(StatusCodes.OK);
       expect(response.data.pseudo).to.be.eq(user.pseudo);
       expect(response.data.token).to.exist;
+    });
+
+    it("should log in with token", async () => {
+      let response = await httpClient.post(`${Utils.buildServerURL()}/users/login`, { pseudo: config.test.users.basic.pseudo, password: config.test.users.basic.password });
+      expect(response.status).to.be.eq(StatusCodes.OK);
+      expect(response.data.token).to.exist;
+      const token = response.data.token;
+
+      response = await httpClient.post(`${Utils.buildServerURL()}/users/login`, { token });
+      expect(response.status).to.be.eq(StatusCodes.OK);
+      expect(response.data.pseudo).to.be.eq(config.test.users.basic.pseudo);
+      expect(response.data.token).to.be.eq(token);
     });
 
     it("should not log in with wrong credentials", async () => {
