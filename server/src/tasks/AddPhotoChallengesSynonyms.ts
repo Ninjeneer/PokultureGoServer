@@ -38,5 +38,11 @@ export default class AddPhotoChallengesSynonyms extends Task {
         logupdate(`Updated challenge ${challenge.id} with ${challenge.allowedTags.length} synonyms`);
       }
     }
+    const setting = await SettingStorage.getSettingByKey(SettingKey.RUN_TASK_ADD_CHALLENGES_PHOTO_SYNONYMS);
+    if (setting) {
+      await SettingStorage.updateSetting(SettingKey.RUN_TASK_ADD_CHALLENGES_PHOTO_SYNONYMS, false);
+    } else {
+      await SettingStorage.createSetting(SettingKey.RUN_TASK_ADD_CHALLENGES_PHOTO_SYNONYMS, false);
+    }
   }
 }

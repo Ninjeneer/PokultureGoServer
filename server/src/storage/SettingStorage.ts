@@ -21,6 +21,6 @@ export default class SettingStorage {
   }
 
   public static async updateSetting(key: string, value: string | boolean) {
-    return Setting.findOneAndUpdate({ key }, { $set: { key, value }});
+    return Setting.findOneAndUpdate({ key }, { $set: { key, value }}, { useFindAndModify: false });
   }
 }

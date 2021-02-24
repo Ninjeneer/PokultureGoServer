@@ -47,6 +47,12 @@ export default class AddPOIDescriptionTask extends Task {
       }
       // POI without description found
       if (poi && getDistance({ latitude: poi.location[1], longitude: poi.location[0] }, { latitude: openDataPoi.latitude, longitude: openDataPoi.longitude }) <= 30) {
+        // Remove last sentance if it ends with "..."
+        if (/.*[\.]{3}$/.test(openDataPoi.description)) {
+          const sentances = openDataPoi.description.split('.').filter((s) => s !== '');
+          sentances.pop(); // Remove last sentance
+          openDataPoi.description = sentances.join('.') + ".";
+        }
         poi.description = openDataPoi.description;
         poi.descriptionBasedType = descriptionBasedType;
         await POIStorage.updatePOI(poi);
