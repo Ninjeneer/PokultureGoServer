@@ -17,7 +17,8 @@ export default class ChallengeController {
       challenge = await ChallengeStorage.getChallenge({ id });
     } catch (e) {
       throw new AppError({
-        code: StatusCodes.BAD_REQUEST
+        code: StatusCodes.BAD_REQUEST,
+        message: e.message
       });
     }
     if (!challenge) {
@@ -64,7 +65,7 @@ export default class ChallengeController {
         const imageRecognition = RecognitionFactory.createTensorFlowrecognition();
         const results = await imageRecognition.recognizeImage(payload.image);
         const distanceFromPOI = getDistance({ latitude: poi.location[1], longitude: poi.location[0] }, { latitude: payload.latitude, longitude: payload.longitude });
-        if (results.some(r => challenge.allowedTags.includes(r)) && distanceFromPOI < 60) {
+        if (!results.some(r => challenge.allowedTags.includes(r)) && distanceFromPOI < 60) {
           // Challenge is validated
           const location = await (new LocationIQ()).reverseGeocoding(payload.latitude, payload.longitude);
           if (location && location.address && location.address.city) {
