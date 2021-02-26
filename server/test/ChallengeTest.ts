@@ -10,9 +10,10 @@ import Database from "../src/Database";
 import { IChallenge } from "../src/models/Challenge";
 import POIStorage from "../src/storage/POIStorage";
 import fs from 'fs';
+import * as faker from 'faker';
 
 const httpClient = new HttpClient();
-const user = {} as { pseudo: string; password: string };
+let user = {} as { pseudo: string, password: string }
 
 chai.use(chaiSubset);
 const db = new Database();
@@ -58,9 +59,20 @@ describe("Challenge tests", function () {
     });
 
     it("should not validate a photo challenge with too far coordinates", async () => {
+      user.pseudo = faker.random.alphaNumeric(10);
+      user.password = faker.random.alphaNumeric(10);
+      // Create new user
+      let response = await httpClient.post(`${Utils.buildServerURL()}/users/register`, {
+        pseudo: user.pseudo,
+        password: user.password
+      });
+      expect(response.status).to.be.eq(StatusCodes.CREATED);
+      // Log as
+      await httpClient.logAs(user.pseudo, user.password);
+
       const poi = await POIStorage.getPOI({ name: 'Château de Caen' });
       const challenge = await ChallengeStorage.getChallenge({ id: poi.challenge });
-      const response = await httpClient.post(`${Utils.buildServerURL()}/challenges/validate`, {
+      response = await httpClient.post(`${Utils.buildServerURL()}/challenges/validate`, {
         id: challenge.id,
         payload: {
           latitude: 0,
@@ -73,6 +85,37 @@ describe("Challenge tests", function () {
     });
 
     it("should validate a photo challenge", async () => {
+      user.pseudo = faker.random.alphaNumeric(10);
+      user.password = faker.random.alphaNumeric(10);
+
+      // Create new user
+      let response = await httpClient.post(`${Utils.buildServerURL()}/users/register`, {
+        pseudo: user.pseudo,
+        password: user.password
+      });
+      expect(response.status).to.be.eq(StatusCodes.CREATED);
+
+      // Log as
+      await httpClient.logAs(user.pseudo, user.password);
+
+      const poi = await POIStorage.getPOI({ name: 'Château de Caen' });
+      const challenge = await ChallengeStorage.getChallenge({ id: poi.challenge });
+      response = await httpClient.post(`${Utils.buildServerURL()}/challenges/validate`, {
+        id: challenge.id,
+        payload: {
+          latitude: Utils.locations(poi.location).latitude,
+          longitude: Utils.locations(poi.location).longitude,
+          image: fs.readFileSync("test/assets/chateau-caen.jpg", { encoding: 'base64' })
+        }
+      });
+      expect(response.status).to.be.eq(StatusCodes.OK);
+      expect(response.data).to.be.deep.eq({ validated: true, score: challenge.score });
+    });
+
+    it("should not validate the same challenge", async () => {
+      // Log as
+      await httpClient.logAs(user.pseudo, user.password);
+
       const poi = await POIStorage.getPOI({ name: 'Château de Caen' });
       const challenge = await ChallengeStorage.getChallenge({ id: poi.challenge });
       const response = await httpClient.post(`${Utils.buildServerURL()}/challenges/validate`, {
@@ -83,8 +126,7 @@ describe("Challenge tests", function () {
           image: fs.readFileSync("test/assets/chateau-caen.jpg", { encoding: 'base64' })
         }
       });
-      expect(response.status).to.be.eq(StatusCodes.OK);
-      expect(response.data).to.be.deep.eq({ validated: true, score: challenge.score });
+      expect(response.status).to.be.eq(StatusCodes.FORBIDDEN);
     });
   });
 });

@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 import bcrypt from 'bcrypt';
+import { IChallenge } from "./Challenge";
 
 export interface IUser extends Document {
   pseudo: string;
@@ -7,6 +8,7 @@ export interface IUser extends Document {
   token?: string;
   avatar?: string;
   scores: IScore[];
+  challengesDone: string[];
 }
 
 export interface IScore {
@@ -24,7 +26,8 @@ const UserSchema: Schema = new Schema({
   password: { type: String, required: true },
   token: { type: String, unique: true },
   avatar: { type: String },
-  scores: [ScoreSchema]
+  scores: [ScoreSchema],
+  challengesDone: [String]
 });
 
 UserSchema.pre("save", function save(next) {

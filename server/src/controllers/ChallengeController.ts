@@ -34,22 +34,27 @@ export default class ChallengeController {
     let challenge: IChallenge;
     try {
       challenge = await ChallengeStorage.getChallenge({ id: challengeID });
+      if (!challenge) {
+        throw new Error();
+      }
     } catch (e) {
       throw new AppError({
         message: 'Challenge does not exists',
         code: StatusCodes.NOT_FOUND
       });
     }
-    if (!challenge) {
-      throw new AppError({
-        message: 'Challenge does not exists',
-        code: StatusCodes.NOT_FOUND
-      });
-    }
+    // Check payload content
     if (!payload || Utils.isEmptyObject(payload)) {
       throw new AppError({
         code: StatusCodes.BAD_REQUEST,
         message: 'Payload is missing or empty'
+      });
+    }
+    // Check if the challenge is already done
+    if (user.challengesDone && user.challengesDone.includes(challenge.id)) {
+      throw new AppError({
+        code: StatusCodes.FORBIDDEN,
+        message: 'Challenge is already validated'
       });
     }
     switch (challenge.type) {
@@ -79,6 +84,11 @@ export default class ChallengeController {
             }
             try {
               // Update user
+              if (user.challengesDone) {
+                user.challengesDone.push(challenge.id);
+              } else {
+               user.challengesDone = [challenge.id];
+              }
               await UserStorage.updateUser(user);
             } catch (e) {
               throw new AppError({
