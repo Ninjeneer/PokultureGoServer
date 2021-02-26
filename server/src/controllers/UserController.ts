@@ -103,6 +103,7 @@ export default class UserController {
         })
       }
     }
-    return Utils.hideUserPassword(user);
+    delete user.password;
+    return user;
   }
 }

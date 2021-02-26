@@ -1,4 +1,5 @@
 import User, { IScore, IUser } from "../models/User";
+import Utils from "../Utils";
 
 export default class UserStorage {
   public static async getUsersScores(params?: { city: IScore['city'] }): Promise<IUser[]> {
@@ -9,21 +10,24 @@ export default class UserStorage {
         aggregation.push({ '$match': { 'scores.city': params.city } });
       }
     }
-
+    Utils.reformatIdField(aggregation);
+    Utils.deleteUselessFields(aggregation);
     return User.aggregate(aggregation);
   }
 
   public static async getUsers(params?: { pseudo?: string, token?: string }): Promise<IUser[]> {
-    const query = {}
+    const aggregation = []
     if (params) {
       if (params.pseudo) {
-        Object.assign(query, { pseudo: params.pseudo });
+        aggregation.push({ $match: { pseudo: params.pseudo } });
       }
       if (params.token) {
-        Object.assign(query, { token: params.token });
+        aggregation.push({ $match: { token: params.token } });
       }
     }
-    return User.find(query);
+    Utils.reformatIdField(aggregation);
+    Utils.deleteUselessFields(aggregation);
+    return User.aggregate(aggregation);
   }
 
   public static async getUserByToken(token: string): Promise<IUser> {
@@ -32,7 +36,8 @@ export default class UserStorage {
   }
 
   public static async getUserByPseudo(pseudo: string): Promise<IUser> {
-    return User.findOne({ pseudo });
+    const res = await UserStorage.getUsers({ pseudo });
+    return res.length > 0 ? res[0] : null;
   }
 
   public static async updateUser(user: IUser): Promise<IUser> {

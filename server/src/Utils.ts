@@ -15,9 +15,11 @@ export default class Utils {
   }
 
   public static hideUserPassword(u: IUser): IUser {
-    const user = {...u['_doc']} as IUser;
-    delete user.password;
-    return user;
+    if (u['_doc']) {
+      u = {...u['_doc']} as IUser;
+    }
+    delete u.password;
+    return u;
   }
 
   public static buildServerURL(): string {
@@ -38,5 +40,9 @@ export default class Utils {
   public static reformatIdField(aggregation: {}[]) {
     aggregation.push({ $addFields: { id: "$_id" } });
     aggregation.push({ $unset: "_id" });
+  }
+
+  public static deleteUselessFields(aggregation: {}[]) {
+    aggregation.push({ $project: { __v: 0 } });
   }
 }
