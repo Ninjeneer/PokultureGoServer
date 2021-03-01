@@ -25,7 +25,11 @@ export default class POIController {
     }
     const city = await this.getPOICityName(poi);
     if (city) {
-      Object.assign(poi, { images: await this.getPOIImage(`${poi.name} ${city}`, 10) });
+      if (poi.images && poi.images.length !== 0) {
+        const images = await this.getPOIImage(`${poi.name} ${city}`, 10);
+        Object.assign(poi, { images });
+        await POIStorage.updatePOI(poi);
+      }
     }
     return poi;
   }
@@ -44,7 +48,11 @@ export default class POIController {
       if (poi.tags.name) {
         const city = await this.getPOICityName(poi);
         if (city) {
-          Object.assign(poi, { images: await this.getPOIImage(`${poi.tags.name} ${city}`, 10) });
+          if (poi.images && poi.images.length !== 0) {
+            const images = await this.getPOIImage(`${poi.name} ${city}`, 10);
+            Object.assign(poi, { images });
+            await POIStorage.updatePOI(poi);
+          }
         }
       }
     }

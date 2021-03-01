@@ -27,12 +27,12 @@ export default class AddPhotoChallengesSynonyms extends Task {
     const challenges = await ChallengeStorage.getChallenges();
     const synonym = SynonymFactory.createThesaurus();
     for (const challenge of challenges) {
-      const poi = await POIStorage.getPOI({ challengeID: challenge.id });
+      const poi = await POIStorage.getPOI({ challengeID: challenge.id.toString() });
       // Handle types having format XXXX_XXXXX
       for (const subType of poi.tags[poi.type].split("_")) {
         challenge.allowedTags.push(...await synonym.getSynonymsOf(subType));
       }
-      await challenge.save();
+      await ChallengeStorage.updateChallenge(challenge);
       if (challenge.allowedTags.length > 1) {
         // Avoid logging for single word
         logupdate(`Updated challenge ${challenge.id} with ${challenge.allowedTags.length} synonyms`);

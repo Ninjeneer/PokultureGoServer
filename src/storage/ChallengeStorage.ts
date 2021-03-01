@@ -23,6 +23,11 @@ export default class ChallengeStorage {
     return Challenge.aggregate(aggregation);
   }
 
+  public static async saveChallenge(challenge: IChallenge) {
+    const challengeModel = new Challenge(challenge);
+    return await challengeModel.save();
+  }
+
   public static async updateChallenge(challenge: IChallenge) {
     return Challenge.findOneAndUpdate({ '_id': challenge._id }, { $set: challenge }, { useFindAndModify: false });
   }

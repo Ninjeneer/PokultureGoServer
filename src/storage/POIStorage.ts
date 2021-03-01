@@ -21,14 +21,11 @@ export default class POIStorage {
       }
       if (params.near && params.latitude && params.longitude && params.range) {
         aggregation.push({
-          $match: {
-            location: {
-              $near: {
-                $geometry: { type: "Point", coordinates: [params.longitude, params.latitude] },
-                $minDistance: 0,
-                $maxDistance: params.range
-              }
-            }
+          $geoNear: {
+            near: { type: "Point", coordinates: [params.latitude, params.longitude] },
+            distanceField: "distance",
+            maxDistance: params.range,
+            spherical: true
           }
         });
       }
