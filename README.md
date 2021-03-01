@@ -15,12 +15,6 @@
 npm i
 ```
 - Start MongoDB database
-- Open a MongoDB client and run the following commands
-```
-db.createCollection("pois");
-db.pois.createIndex({ location: "2dsphere" };)
-```
-
 - Run server
 ```
 npm run start
