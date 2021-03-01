@@ -2,6 +2,7 @@ import Database from "../Database";
 import config from '../../assets/config.json'
 import POI, { IPOI } from "../models/POI";
 import mongoose from 'mongoose';
+import Utils from "../Utils";
 
 export default class POIStorage {
   public static async getPOI(params?: { id?: string, name?: string, near?: boolean, latitude?: number, longitude?: number, range?: number, type?: string[], challengeID?: string }): Promise<IPOI> {
@@ -10,21 +11,23 @@ export default class POIStorage {
   }
 
   public static async getPOIs(params?: { id?: string, name?: string, near?: boolean, latitude?: number, longitude?: number, range?: number, type?: string[], challengeID?: string }): Promise<IPOI[]> {
-    const query = {};
+    const aggregation = [];
     if (params) {
       if (params.id) {
-        Object.assign(query, { _id: mongoose.Types.ObjectId(params.id) });
+        aggregation.push({ $match: { _id: mongoose.Types.ObjectId(params.id) } });
       }
       if (params.name) {
-        Object.assign(query, {name: params.name });
+        aggregation.push({ $match: { name: params.name } });
       }
       if (params.near && params.latitude && params.longitude && params.range) {
-        Object.assign(query, {
-          location: {
-            $near: {
-              $geometry: { type: "Point", coordinates: [params.longitude, params.latitude] },
-              $minDistance: 0,
-              $maxDistance: params.range
+        aggregation.push({
+          $match: {
+            location: {
+              $near: {
+                $geometry: { type: "Point", coordinates: [params.longitude, params.latitude] },
+                $minDistance: 0,
+                $maxDistance: params.range
+              }
             }
           }
         });
@@ -34,13 +37,15 @@ export default class POIStorage {
         for (const type of config.allowedTypes.map(t => t.name)) {
           or.push({ [`tags.${type}`]: { $in: params.type } });
         }
-        Object.assign(query, { $or: or });
+        aggregation.push({ $or: or });
       }
       if (params.challengeID) {
-        Object.assign(query, { challenge: params.challengeID });
+        aggregation.push({ $match: { challenge: params.challengeID } });
       }
     }
-    return POI.find(query);
+    Utils.reformatIdField(aggregation);
+    Utils.deleteUselessFields(aggregation);
+    return POI.aggregate(aggregation);
   }
 
   public static async updatePOI(poi: any) {

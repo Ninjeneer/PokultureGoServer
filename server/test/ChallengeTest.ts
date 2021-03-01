@@ -20,7 +20,7 @@ const db = new Database();
 let challenges: IChallenge[];
 
 describe("Challenge tests", function () {
-  this.timeout(20000);
+  this.timeout(2000000);
   before(async () => {
     await httpClient.logAs(config.test.users.basic.pseudo, config.test.users.basic.password);
     await db.connect();
@@ -29,11 +29,10 @@ describe("Challenge tests", function () {
 
   describe("Access", () => {
     it("should get a challenge by ID", async () => {
-      const response = await httpClient.get(`${Utils.buildServerURL()}/challenges/${challenges[0].id}`);
+      const response = await httpClient.get(`${Utils.buildServerURL()}/challenges/${challenges[0].id.toString()}`);
       expect(response.status).to.be.eq(StatusCodes.OK);
-      const tmp = challenges[0]['_doc'];
-      tmp._id = tmp._id.toString();
-      expect(response.data).to.be.deep.eq(tmp);
+      challenges[0].id = challenges[0].id.toString();
+      expect(response.data).to.be.deep.eq(challenges[0]);
     });
   })
 

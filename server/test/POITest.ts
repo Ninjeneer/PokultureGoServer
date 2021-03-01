@@ -27,9 +27,8 @@ describe("POI tests", function () {
     it("should get a POI by ID", async () => {
       const response = await httpClient.get(`${Utils.buildServerURL()}/pois/${pois[0].id}`);
       expect(response.status).to.be.eq(StatusCodes.OK);
-      const tmp = pois[0]['_doc'];
-      tmp._id = tmp._id.toString();
-      expect(response.data).to.be.deep.eq(tmp);
+      pois[0].id = pois[0].id.toString();
+      expect(response.data).to.be.deep.eq(pois[0]);
     });
 
     it("should not get a POI with invalid ID", async () => {

@@ -1,5 +1,5 @@
 import Challenge, { IChallenge } from "../models/Challenge";
-import mongoose from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import Utils from "../Utils";
 
 export default class ChallengeStorage {
@@ -9,16 +9,18 @@ export default class ChallengeStorage {
   }
 
   public static async getChallenges(params?: { id?: string | string[], nbSynonyms?: number }): Promise<IChallenge[]> {
-    const query = {};
+    const aggregation = [];
     if (params) {
       if (params.id) {
-        Object.assign(query, Array.isArray(params.id) ? {_id: { $in: params.id.map(id => mongoose.Types.ObjectId(id)) }} : { _id: params.id });
+        aggregation.push({ $match: { _id: Array.isArray(params.id) ? { $in: params.id.map(id => mongoose.Types.ObjectId(id)) } : mongoose.Types.ObjectId(params.id) } });
       }
       if (params.nbSynonyms) {
-        Object.assign(query, { allowedTags: { $size: params.nbSynonyms }})
+        aggregation.push({ $match: { allowedTags: { $size: params.nbSynonyms } } })
       }
     }
-    return Challenge.find(query);
+    Utils.reformatIdField(aggregation);
+    Utils.deleteUselessFields(aggregation);
+    return Challenge.aggregate(aggregation);
   }
 
   public static async updateChallenge(challenge: IChallenge) {

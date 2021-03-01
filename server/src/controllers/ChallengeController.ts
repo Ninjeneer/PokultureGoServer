@@ -51,7 +51,7 @@ export default class ChallengeController {
       });
     }
     // Check if the challenge is already done
-    if (user.challengesDone && user.challengesDone.includes(challenge.id)) {
+    if (user.challengesDone && user.challengesDone.includes(challenge.id.toString())) {
       throw new AppError({
         code: StatusCodes.FORBIDDEN,
         message: 'Challenge is already validated'
