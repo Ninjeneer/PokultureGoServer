@@ -59,7 +59,7 @@ export default class ImportPOITask extends Task {
             // Only save records having a 'tag' attribute with a name and a wanted type
             if (item.tags.name && Object.keys(item.tags).some(tagKey => config.allowedTypes.map(type => type.name).includes(tagKey))) {
               // Move name to object root
-              item.name = item.tags.name;
+              item.name = item.tags.name.replace(/_/g, " ");
               delete item.tags.name;
               // Duplicate type to object root
               item.type = getPOIType(item);
