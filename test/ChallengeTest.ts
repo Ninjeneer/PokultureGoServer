@@ -11,6 +11,7 @@ import { IChallenge } from "../src/models/Challenge";
 import POIStorage from "../src/storage/POIStorage";
 import fs from 'fs';
 import * as faker from 'faker';
+import { Errors } from "../src/Types";
 
 const httpClient = new HttpClient();
 let user = {} as { pseudo: string, password: string }
@@ -80,7 +81,7 @@ describe("Challenge tests", function () {
         }
       });
       expect(response.status).to.be.eq(StatusCodes.OK);
-      expect(response.data).to.be.deep.eq({ validated: false, score: 0 });
+      expect(response.data).to.be.deep.eq({ validated: false, score: 0, reasons: [Errors.TOO_FAR_FROM_POI] });
     });
 
     it("should validate a photo challenge", async () => {

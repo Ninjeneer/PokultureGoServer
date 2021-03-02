@@ -16,3 +16,8 @@ export class AppError extends Error {
     this.stack = e.stack;
   }
 }
+
+export enum Errors {
+  UNRECOGNIZED_IMAGE = 'UnrecognizedImage',
+  TOO_FAR_FROM_POI = 'TooFarFromPOI'
+}

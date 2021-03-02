@@ -1,6 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
 import bcrypt from 'bcrypt';
-import { IChallenge } from "./Challenge";
 
 export interface IUser extends Document {
   pseudo: string;
@@ -9,6 +8,7 @@ export interface IUser extends Document {
   avatar?: string;
   scores: IScore[];
   challengesDone: string[];
+  distance?: number;
 }
 
 export interface IScore {

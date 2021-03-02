@@ -34,7 +34,7 @@ export default class POIController {
     return poi;
   }
 
-  public static async handleGetPOIsAroundLocation(longitude: number, latitude: number, range: number): Promise<IPOI[]> {
+  public static async getPOIsAroundLocation(longitude: number, latitude: number, range: number): Promise<IPOI[]> {
     const pois = await POIStorage.getPOIs({
       near: true,
       latitude: Number(latitude),

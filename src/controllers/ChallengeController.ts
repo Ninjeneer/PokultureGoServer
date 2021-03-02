@@ -7,7 +7,7 @@ import LocationIQ from "../modules/reversegeocoding/LocationIQ";
 import ChallengeStorage from "../storage/ChallengeStorage";
 import POIStorage from "../storage/POIStorage";
 import UserStorage from "../storage/UserStorage";
-import { AppError } from "../Types";
+import { AppError, Errors } from "../Types";
 import Utils from "../Utils";
 
 export default class ChallengeController {
@@ -30,7 +30,7 @@ export default class ChallengeController {
     return challenge;
   }
 
-  public static async validateChallenge(user: IUser, challengeID: IChallenge['id'], payload: any): Promise<{ validated: boolean, score: number }> {
+  public static async validateChallenge(user: IUser, challengeID: IChallenge['id'], payload: any): Promise<{ validated: boolean, score: number, reasons?: string[] }> {
     let challenge: IChallenge;
     try {
       challenge = await ChallengeStorage.getChallenge({ id: challengeID });
@@ -69,43 +69,53 @@ export default class ChallengeController {
         // Process image recognition
         const imageRecognition = RecognitionFactory.createTensorFlowrecognition();
         const results = await imageRecognition.recognizeImage(payload.image);
+        // Calculate distance from POI
         const distanceFromPOI = getDistance({ latitude: poi.location[1], longitude: poi.location[0] }, { latitude: payload.latitude, longitude: payload.longitude });
-        if (!results.some(r => challenge.allowedTags.includes(r)) && distanceFromPOI < 60) {
-          // Challenge is validated
-          const location = await (new LocationIQ()).reverseGeocoding(payload.latitude, payload.longitude);
-          if (location && location.address && location.address.city) {
-            const score = user.scores.find(s => s.city.toLowerCase() === location.address.city.toLowerCase());
-            if (score) {
-              // User has already a score for the given city
-              score.score += challenge.score;
-            } else {
-              // Create a new entry for the city
-              user.scores.push({ city: location.address.city, score: challenge.score });
-            }
-            try {
-              // Update user
-              if (user.challengesDone) {
-                user.challengesDone.push(challenge.id);
-              } else {
-               user.challengesDone = [challenge.id];
-              }
-              await UserStorage.updateUser(user);
-            } catch (e) {
-              throw new AppError({
-                message: 'Failed to update user after challenge validation',
-                stack: e.stack
-              });
-            }
+
+        // Handle error cases
+        const errors: string[] = [];
+        if (results.some(r => challenge.allowedTags.includes(r))) {
+          errors.push(Errors.UNRECOGNIZED_IMAGE)
+        }
+        if (distanceFromPOI > 60) {
+          errors.push(Errors.TOO_FAR_FROM_POI);
+        }
+        if (errors.length > 0) {
+          return { validated: false, score: 0, reasons: errors }
+        }
+
+        // No errors : Challenge is validated
+        const location = await (new LocationIQ()).reverseGeocoding(payload.latitude, payload.longitude);
+        if (location && location.address && location.address.city) {
+          const score = user.scores.find(s => s.city.toLowerCase() === location.address.city.toLowerCase());
+          if (score) {
+            // User has already a score for the given city
+            score.score += challenge.score;
           } else {
-            // Unable to find city
+            // Create a new entry for the city
+            user.scores.push({ city: location.address.city, score: challenge.score });
+          }
+          try {
+            // Update user
+            if (user.challengesDone) {
+              user.challengesDone.push(challenge.id);
+            } else {
+              user.challengesDone = [challenge.id];
+            }
+            await UserStorage.updateUser(user);
+          } catch (e) {
             throw new AppError({
-              message: 'Unable to identify city'
+              message: 'Failed to update user after challenge validation',
+              stack: e.stack
             });
           }
-          return { validated: true, score: challenge.score };
         } else {
-          return { validated: false, score: 0 };
+          // Unable to find city
+          throw new AppError({
+            message: 'Unable to identify city'
+          });
         }
+        return { validated: true, score: challenge.score };
       default:
         break;
     }

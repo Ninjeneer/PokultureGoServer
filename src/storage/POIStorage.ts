@@ -29,13 +29,13 @@ export default class POIStorage {
           }
         });
       }
-      if (params.type) {
-        const or = [];
-        for (const type of config.allowedTypes.map(t => t.name)) {
-          or.push({ [`tags.${type}`]: { $in: params.type } });
-        }
-        aggregation.push({ $or: or });
-      }
+      // if (params.type) {
+      //   const or = [];
+      //   for (const type of config.allowedTypes.map(t => t.name)) {
+      //     or.push({ [`tags.${type}`]: { $in: params.type } });
+      //   }
+      //   aggregation.push({ $or: or });
+      // }
       if (params.challengeID) {
         aggregation.push({ $match: { challenge: params.challengeID } });
       }
