@@ -29,6 +29,6 @@ export default class ChallengeStorage {
   }
 
   public static async updateChallenge(challenge: IChallenge) {
-    return Challenge.findOneAndUpdate({ '_id': challenge._id }, { $set: challenge }, { useFindAndModify: false });
+    return Challenge.findOneAndUpdate({ '_id': challenge.id }, { $set: challenge }, { useFindAndModify: false });
   }
 }

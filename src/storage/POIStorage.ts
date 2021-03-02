@@ -46,6 +46,6 @@ export default class POIStorage {
   }
 
   public static async updatePOI(poi: any) {
-    return POI.findOneAndUpdate({ '_id': poi._id }, { $set: poi }, { useFindAndModify: false });
+    return POI.findOneAndUpdate({ '_id': poi.id }, { $set: poi }, { useFindAndModify: false });
   }
 }

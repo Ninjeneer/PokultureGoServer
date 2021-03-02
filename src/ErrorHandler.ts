@@ -1,5 +1,4 @@
 import { StatusCodes } from "http-status-codes";
-import { AppError } from "./Types";
 
 export default class ErrorHandler {
   public static handleRestError(err, res, next) {
