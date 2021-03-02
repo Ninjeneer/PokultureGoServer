@@ -63,14 +63,16 @@ export default class ImportPOITask extends Task {
               delete item.tags.name;
               // Duplicate type to object root
               item.type = getPOIType(item);
-              // Define POI challenge
-              const challenge = new Challenge({ type: ChallengeType.PHOTO });
-              challenge.score = Math.round(Math.random() * 100);
-              challenge.save().then((c) => {
-                item.challenge = new mongoose.Types.ObjectId(c.id);
-                // Save
-                (new POI(item)).save().then(() => logupdate(`Imported POI n°${++imported}`));
-              });
+              if (config.allowedTypes.find(at => at.name === item.type).values.includes(item.tags[item.type])) {
+                // Define POI challenge
+                const challenge = new Challenge({ type: ChallengeType.PHOTO });
+                challenge.score = Math.round(Math.random() * 100);
+                challenge.save().then((c) => {
+                  item.challenge = new mongoose.Types.ObjectId(c.id);
+                  // Save
+                  (new POI(item)).save().then(() => logupdate(`Imported POI n°${++imported}`));
+                });
+              }
             }
           }
           next();

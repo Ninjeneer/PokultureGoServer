@@ -12,27 +12,19 @@
             "values": [
                 "library",
                 "university",
-                "bus_station",
                 "arts_center",
-                "casino",
                 "cinema",
                 "fountain",
                 "planetarium",
-                "public_bookcase",
-                "social_center",
                 "theatre",
                 "baking_oven",
                 "clock",
                 "conference_centre",
                 "courthouse",
                 "embassy",
-                "fire_station",
-                "kneipp_water_cure",
-                "marketplace",
                 "monastery",
                 "place_of_worship",
                 "public_bath",
-                "shelter",
                 "townhall"
             ]
         },
@@ -42,33 +34,24 @@
                 "alpine_hut",
                 "aquarium",
                 "artwork",
-                "attraction",
                 "gallery",
-                "information",
                 "museum",
-                "viewpoint",
                 "zoo"
             ]
         },
         {
             "name": "historic",
             "values": [
-                "aircraft",
                 "aqueduct",
                 "archeological_site",
                 "building",
                 "castle",
                 "city_gate",
                 "fort",
-                "gallows",
-                "locomotive",
                 "memorial",
                 "monument",
-                "pillory",
-                "railway_car",
                 "ruins",
-                "rune_stone",
-                "tank"
+                "rune_stone"
             ]
         },
         {

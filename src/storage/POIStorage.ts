@@ -22,7 +22,7 @@ export default class POIStorage {
       if (params.near && params.latitude && params.longitude && params.range) {
         aggregation.push({
           $geoNear: {
-            near: { type: "Point", coordinates: [params.latitude, params.longitude] },
+            near: { type: "Point", coordinates: [params.longitude, params.latitude] },
             distanceField: "distance",
             maxDistance: params.range,
             spherical: true
