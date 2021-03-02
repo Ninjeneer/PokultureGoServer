@@ -74,7 +74,7 @@ export default class ChallengeController {
 
         // Handle error cases
         const errors: string[] = [];
-        if (results.some(r => challenge.allowedTags.includes(r))) {
+        if (!results.some(r => challenge.allowedTags.includes(r))) {
           errors.push(Errors.UNRECOGNIZED_IMAGE)
         }
         if (distanceFromPOI > 60) {
