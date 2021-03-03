@@ -77,7 +77,7 @@ export default class ChallengeController {
         if (!results.some(r => challenge.allowedTags.includes(r))) {
           errors.push(Errors.UNRECOGNIZED_IMAGE);
         }
-        if (distanceFromPOI > 200) {
+        if (distanceFromPOI > 400) {
           errors.push(Errors.TOO_FAR_FROM_POI);
         }
         if (errors.length > 0) {
